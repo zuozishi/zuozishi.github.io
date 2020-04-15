@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Zuozishi Blog</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="Zuozishi Blog">
+  <title>安装k8s集群 | Zuozishi Blog</title>
+  <meta name="keywords" content=" Kubernetes , Docker , ProjectEdge ">
+  <meta name="description" content="安装k8s集群 | Zuozishi Blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="@[TOC] 一、关闭防火墙systemctl stop firewalld systemctl disable firewalld systemctl status firewalld 二、配置yum源curl http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;repo&#x2F;Centos-7.repo &gt; &#x2F;etc&#x2F;yum.repos.d&#x2F;CentOS-Base.repos cp kuber">
 <meta property="og:type" content="article">
@@ -55,7 +55,7 @@
 </div>
 
 <body>
-<aside class="nav mobile">
+<aside class="nav">
     <div class="nav-left">
         <a href="/" class="avatar_target">
     <img class="avatar" src="https://avatars1.githubusercontent.com/u/20531439" />
@@ -310,12 +310,70 @@
         </div>
     </div>
 </aside>
-<div class="post index">
+<div class="post">
     <div class="pjax">
-        <article class="index">
-            <div class="toc-ref">
+        <article id="post-ProjectEdge/安装k8s集群" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Zuozishi-Blog"><span class="toc-text">Zuozishi Blog</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Info"><span class="toc-text">Info</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#博客平台"><span class="toc-text">博客平台</span></a></li></ol></li></ol>
+        <h1 class="article-title">安装k8s集群</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            
+                <a  data-rel="虚拟化/容器">虚拟化/容器</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            
+            <a class="color1">Kubernetes</a>
+            
+            <a class="color2">Docker</a>
+            
+            <a class="color2">ProjectEdge</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2020-04-16 04:43:15'>2020-04-16 04:00</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        
+        <span id="busuanzi_container_page_pv">
+            阅读:<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+        <span class="top-comment" title="跳转至评论区">
+            <a href="#comments">
+                评论:<span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </a>
+        </span>
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、关闭防火墙"><span class="toc-text">一、关闭防火墙</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、配置yum源"><span class="toc-text">二、配置yum源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、安装软件"><span class="toc-text">三、安装软件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、配置Docker镜像源"><span class="toc-text">四、配置Docker镜像源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、配置系统"><span class="toc-text">五、配置系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、配置k8s"><span class="toc-text">六、配置k8s</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#七、安装k8s-Dashboard"><span class="toc-text">七、安装k8s Dashboard</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -328,12 +386,81 @@
     }
 </style>
 </div>
-            <h1 id="Zuozishi-Blog"><a href="#Zuozishi-Blog" class="headerlink" title="Zuozishi Blog"></a>Zuozishi Blog</h1><h2 id="Info"><a href="#Info" class="headerlink" title="Info"></a>Info</h2><p>到目前为止已经写了<code class="article_number"></code>篇文章， 共<code class="site_word_count"></code>字。<br>本站访问人数：<code class="site_uv"></code>人次 ， 访问量：<code class="site_pv"></code>次</p>
-<h2 id="博客平台"><a href="#博客平台" class="headerlink" title="博客平台"></a>博客平台</h2><p>这个博客通过 <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> 生成，部署在 <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a>，主题 <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank" rel="noopener">3-hexo</a></p>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><div class='inner-toc'><h2>目录</h2><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、关闭防火墙"><span class="toc-text">一、关闭防火墙</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、配置yum源"><span class="toc-text">二、配置yum源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、安装软件"><span class="toc-text">三、安装软件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、配置Docker镜像源"><span class="toc-text">四、配置Docker镜像源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、配置系统"><span class="toc-text">五、配置系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六、配置k8s"><span class="toc-text">六、配置k8s</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#七、安装k8s-Dashboard"><span class="toc-text">七、安装k8s Dashboard</span></a></li></ol></div></p>
+<h2 id="一、关闭防火墙"><a href="#一、关闭防火墙" class="headerlink" title="一、关闭防火墙"></a>一、关闭防火墙</h2><pre><code class="bash">systemctl stop firewalld
+systemctl disable firewalld
+systemctl status firewalld</code></pre>
+<h2 id="二、配置yum源"><a href="#二、配置yum源" class="headerlink" title="二、配置yum源"></a>二、配置yum源</h2><pre><code class="bash">curl http://mirrors.aliyun.com/repo/Centos-7.repo &gt; /etc/yum.repos.d/CentOS-Base.repos
+cp kubernetes.repo /etc/yum.repos.d/kubernetes.repo
+curl http://mirrors.cloud.aliyuncs.com/docker-ce/linux/centos/docker-ce.repo &gt; /etc/yum.repos.d/docker-ce.repo
+setenforce 0
+yum makecache</code></pre>
+<h2 id="三、安装软件"><a href="#三、安装软件" class="headerlink" title="三、安装软件"></a>三、安装软件</h2><pre><code class="bash">yum install wget net-tools sshpass docker-ce docker-ce-cli containerd.io kubelet kubeadm kubectl --nogpgcheck -y</code></pre>
+<h2 id="四、配置Docker镜像源"><a href="#四、配置Docker镜像源" class="headerlink" title="四、配置Docker镜像源"></a>四、配置Docker镜像源</h2><pre><code class="bash">echo &#39;{&quot;registry-mirrors&quot;: [&quot;https://3m7egqv1.mirror.aliyuncs.com&quot;]}&#39; &gt; /etc/docker/daemon.json
+systemctl daemon-reload
+systemctl restart docker</code></pre>
+<h2 id="五、配置系统"><a href="#五、配置系统" class="headerlink" title="五、配置系统"></a>五、配置系统</h2><pre><code class="bash"># 重置路由表
+iptables -P FORWARD ACCEPT
+echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-iptables
+echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-ip6tables
+# 关闭交换分区
+swapoff -a
+# 还要修改/etc/fstab文件注释掉swap分区</code></pre>
+<h2 id="六、配置k8s"><a href="#六、配置k8s" class="headerlink" title="六、配置k8s"></a>六、配置k8s</h2><pre><code class="yaml"># init-config.yaml
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+imageRepository: gcr.azk8s.cn/google_containers
+kubernetesVersion: v1.17.0
+networking:
+  podSubnet: &quot;172.16.0.0/16&quot;</code></pre>
+<pre><code class="bash"># 下载所需镜像
+kubeadm config images pull --config=init-config.yaml
+# 初始化kubernetes
+kubeadm init --config=init-config.yaml --ignore-preflight-errors=NumCPU
+# 配置kubectl
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+# 配置kubernetes网络
+kubectl apply -f &quot;https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d &#39;\n&#39;)&quot;
+# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
-        </article>
-        
-        
+# 设置master为可执行node节点（可选）
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+# 配置ApiServer SSL证书
+grep &#39;client-certificate-data&#39; ~/.kube/config | head -n 1 | awk &#39;{print $2}&#39; | base64 -d &gt; kubecfg.crt
+grep &#39;client-key-data&#39; ~/.kube/config | head -n 1 | awk &#39;{print $2}&#39; | base64 -d &gt; kubecfg.key
+openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.p12 -name &quot;kubernetes-client&quot;</code></pre>
+<h2 id="七、安装k8s-Dashboard"><a href="#七、安装k8s-Dashboard" class="headerlink" title="七、安装k8s Dashboard"></a>七、安装k8s Dashboard</h2><pre><code class="bash">kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk &#39;{print $1}&#39;) &gt; token.txt</code></pre>
+<p>客户端安装CA证书</p>
+<p>浏览器访问：https://&lt;master-ip&gt;:6443/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/</p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 wwb123123@outlook.com </span>
+    </div>
+</article>
+
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>安装k8s集群</p>
+    
+    <p><span class="copy-title">本文作者:</span><a  title="Zuozishi">Zuozishi</a></p>
+    <p><span class="copy-title">发布时间:</span>2020-04-16, 04:00:48</p>
+    <p><span class="copy-title">最后更新:</span>2020-04-16, 04:43:15</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2020/04/16/ProjectEdge/%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/" title="安装k8s集群">https://zuozishi.github.io/2020/04/16/ProjectEdge/%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
     <div id="comments"></div>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
 
@@ -353,6 +480,13 @@
         gitalk.render('comments')
     })
 </script>
+
+
+
+
+    
+
+
 
 
     </div>
