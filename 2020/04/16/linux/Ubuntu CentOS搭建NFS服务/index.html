@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Ubuntu下搭建GitLab | Zuozishi Blog</title>
+  <title>Ubuntu/CentOS搭建NFS服务 | Zuozishi Blog</title>
   <meta name="keywords" content=" Linux , Ubuntu ">
-  <meta name="description" content="Ubuntu下搭建GitLab | Zuozishi Blog">
+  <meta name="description" content="Ubuntu/CentOS搭建NFS服务 | Zuozishi Blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="title: k8s集群中的坑 date: 2020-04-21 15:07:15 categories: 虚拟化&#x2F;容器 tags: - Kubernetes - ProjectEdge 无法访问上游DNS服务器修改kube-system命名空间的Config Map:coredns kind: ConfigMap apiVersion: v1 metadata:   name: coredns">
 <meta property="og:type" content="article">
@@ -321,9 +321,9 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-linux/Ubuntu下搭建gitlab" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-linux/Ubuntu CentOS搭建NFS服务" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">Ubuntu下搭建GitLab</h1>
+        <h1 class="article-title">Ubuntu/CentOS搭建NFS服务</h1>
     
     <div class="article-meta">
         
@@ -347,7 +347,7 @@
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2020-04-16 19:24:48'>2020-04-16 16:04</time>
+        创建时间:<time class="date" title='更新时间: 2020-04-18 17:46:06'>2020-04-16 16:04</time>
         
     </div>
     <div class="article-meta">
@@ -380,7 +380,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-安装依赖"><span class="toc-text">1. 安装依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-安装GitLab"><span class="toc-text">2. 安装GitLab</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-浏览器访问"><span class="toc-text">3. 浏览器访问</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-管理工具：gitlab-ctl"><span class="toc-text">4. 管理工具：gitlab-ctl</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1、NFS-介绍"><span class="toc-text">1、NFS 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2、安装-NFS-软件包"><span class="toc-text">2、安装 NFS 软件包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3、添加-NFS-共享目录"><span class="toc-text">3、添加 NFS 共享目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4、启动-NFS-服务"><span class="toc-text">4、启动 NFS 服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5、测试-NFS-服务器"><span class="toc-text">5、测试 NFS 服务器</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -396,25 +396,23 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="1-安装依赖"><a href="#1-安装依赖" class="headerlink" title="1. 安装依赖"></a>1. 安装依赖</h2><p><code>sudo apt-get install -y curl openssh-server ca-certificates</code></p>
-<p>安装Postfix服务用来发送通知邮件，使用其他SMTP服务器可以跳过此步。</p>
-<p><code>sudo apt-get install -y postfix</code></p>
-<h2 id="2-安装GitLab"><a href="#2-安装GitLab" class="headerlink" title="2. 安装GitLab"></a>2. 安装GitLab</h2><p>添加镜像源：</p>
-<pre><code class="bash">curl https://packages.gitlab.com/gpg.key 2&gt; /dev/null | sudo apt-key add - &amp;&gt;/dev/null
-echo &quot;deb https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/ubuntu bionic main&quot; &gt; /etc/apt/sources.list.d/gitlab-ce.list
-sudo apt-get update</code></pre>
-<p>安装GitLab：</p>
-<p><code>sudo EXTERNAL_URL=&quot;https://gitlab.example.com&quot; apt-get install gitlab-ce</code></p>
-<p>将<code>https://gitlab.example.com</code>替换为自己的链接，GitLab将自动从<a href="https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypthttpsletsencryptorg-integration" target="_blank" rel="noopener">Let’s Encrypt</a>获取证书。</p>
-<h2 id="3-浏览器访问"><a href="#3-浏览器访问" class="headerlink" title="3. 浏览器访问"></a>3. 浏览器访问</h2><p>第一次访问时，将提示重置密码，默认账户名为<code>root</code>。</p>
-<h2 id="4-管理工具：gitlab-ctl"><a href="#4-管理工具：gitlab-ctl" class="headerlink" title="4. 管理工具：gitlab-ctl"></a>4. 管理工具：gitlab-ctl</h2><p>启动/停止/重启/强制停止/状态</p>
-<p><code>gitlab-ctl start/stop/restart/kill/status</code></p>
-<p>重新获取HTTPS证书</p>
-<p><code>gitlab-ctl renew-le-certs</code></p>
-<p>清除所有数据</p>
-<p><code>gitlab-ctl cleanse</code></p>
-<p>卸载</p>
-<p><code>gitlab-ctl uninstall</code></p>
+        <h2 id="1、NFS-介绍"><a href="#1、NFS-介绍" class="headerlink" title="1、NFS 介绍"></a>1、NFS 介绍</h2><p>NFS 即网络文件系统（Network File-System），可以通过网络让不同机器、不同系统之间可以实现文件共享。通过 NFS，可以访问远程共享目录，就像访问本地磁盘一样。NFS 只是一种文件系统，本身并没有传输功能，是基于 RPC（远程过程调用）协议实现的，采用 C/S 架构。</p>
+<h2 id="2、安装-NFS-软件包"><a href="#2、安装-NFS-软件包" class="headerlink" title="2、安装 NFS 软件包"></a>2、安装 NFS 软件包</h2><p>Ubuntu：</p>
+<pre><code class="bash">apt-get install nfs-kernel-server  # 安装 NFS服务器端
+apt-get install nfs-common rpcbind # 安装 NFS客户端</code></pre>
+<p>CentOS：</p>
+<pre><code class="bash">yum install -y nfs-common nfs-utils rpcbind</code></pre>
+<h2 id="3、添加-NFS-共享目录"><a href="#3、添加-NFS-共享目录" class="headerlink" title="3、添加 NFS 共享目录"></a>3、添加 NFS 共享目录</h2><p>若需要把 <code>/nfsroot</code> 目录设置为 NFS 共享目录，请在<code>/etc/export</code>文件末尾添加下面的一行：</p>
+<p><code>/nfsroot *(rw,no_root_squash,no_all_squash,sync) # * 表示允许任何网段 IP 的系统访问该 NFS 目录</code></p>
+<p>新建<code>/nfsroot</code>目录，并为该目录设置最宽松的权限：</p>
+<pre><code class="bash">mkdir /nfsroot
+chmod 777 /nfsroot</code></pre>
+<h2 id="4、启动-NFS-服务"><a href="#4、启动-NFS-服务" class="headerlink" title="4、启动 NFS 服务"></a>4、启动 NFS 服务</h2><p><code>/etc/init.d/nfs-kernel-server start</code></p>
+<p>在 NFS 服务已经启动的情况下，如果修改了 <code>/etc/exports</code> 文件，需要重启 NFS 服务，以刷新 NFS 的共享目录。</p>
+<p><code>/etc/init.d/nfs-kernel-server restart</code></p>
+<h2 id="5、测试-NFS-服务器"><a href="#5、测试-NFS-服务器" class="headerlink" title="5、测试 NFS 服务器"></a>5、测试 NFS 服务器</h2><p><code>sudo mount -t nfs &lt;ip_addr&gt;:/nfsroot /mnt -o nolock</code></p>
+<p><code>&lt;ip_addr&gt;</code>为主机 ip，<code>/nfsroot</code>为主机共享目录，<code>/mnt</code> 为设备挂载目录，如果指令运行没有出错，则 NFS 挂载成功，在主机的<code>/mnt</code> 目录下应该可以看到<code>/nfsroot</code>目录下的内容（可先在 nfsroot 目录下新建测试目录），如需卸载使用</p>
+<p><code>umount /mnt</code></p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 wwb123123@outlook.com </span>
@@ -424,12 +422,12 @@ sudo apt-get update</code></pre>
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>Ubuntu下搭建GitLab</p>
+    <p><span class="copy-title">文章标题:</span>Ubuntu/CentOS搭建NFS服务</p>
     
     <p><span class="copy-title">本文作者:</span><a  title="Zuozishi">Zuozishi</a></p>
     <p><span class="copy-title">发布时间:</span>2020-04-16, 16:04:17</p>
-    <p><span class="copy-title">最后更新:</span>2020-04-16, 19:24:48</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/2020/04/16/linux/Ubuntu%E4%B8%8B%E6%90%AD%E5%BB%BAgitlab/" title="Ubuntu下搭建GitLab">https://zuozishi.github.io/2020/04/16/linux/Ubuntu%E4%B8%8B%E6%90%AD%E5%BB%BAgitlab/</a>
+    <p><span class="copy-title">最后更新:</span>2020-04-18, 17:46:06</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2020/04/16/linux/Ubuntu%20CentOS%E6%90%AD%E5%BB%BANFS%E6%9C%8D%E5%8A%A1/" title="Ubuntu/CentOS搭建NFS服务">https://zuozishi.github.io/2020/04/16/linux/Ubuntu%20CentOS%E6%90%AD%E5%BB%BANFS%E6%9C%8D%E5%8A%A1/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>
