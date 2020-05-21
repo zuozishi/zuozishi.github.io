@@ -6,16 +6,18 @@
   <meta name="keywords" content="">
   <meta name="description" content="Zuozishi Blog">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="description" content="title: k8s集群中的坑 date: 2020-04-21 15:07:15 categories: 虚拟化&#x2F;容器 tags: - Kubernetes - ProjectEdge 无法访问上游DNS服务器修改kube-system命名空间的Config Map:coredns kind: ConfigMap apiVersion: v1 metadata:   name: coredns">
+<meta name="description" content="无法访问上游DNS服务器修改kube-system命名空间的Config Map:coredns kind: ConfigMap apiVersion: v1 metadata:   name: coredns   namespace: kube-system   selfLink: ...   uid: ...   resourceVersion: ...   creationTimestamp">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ProjectEdge&#x2F;k8s集群中的坑">
+<meta property="og:title" content="k8s集群中的坑">
 <meta property="og:url" content="https://zuozishi.github.io/2020/04/21/ProjectEdge/k8s%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E5%9D%91/index.html">
 <meta property="og:site_name" content="Zuozishi Blog">
-<meta property="og:description" content="title: k8s集群中的坑 date: 2020-04-21 15:07:15 categories: 虚拟化&#x2F;容器 tags: - Kubernetes - ProjectEdge 无法访问上游DNS服务器修改kube-system命名空间的Config Map:coredns kind: ConfigMap apiVersion: v1 metadata:   name: coredns">
+<meta property="og:description" content="无法访问上游DNS服务器修改kube-system命名空间的Config Map:coredns kind: ConfigMap apiVersion: v1 metadata:   name: coredns   namespace: kube-system   selfLink: ...   uid: ...   resourceVersion: ...   creationTimestamp">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-04-21T07:07:06.338Z">
-<meta property="article:modified_time" content="2020-04-21T07:10:42.159Z">
+<meta property="article:published_time" content="2020-04-21T07:07:15.000Z">
+<meta property="article:modified_time" content="2020-05-21T18:35:43.689Z">
 <meta property="article:author" content="Zuozishi">
+<meta property="article:tag" content="Kubernetes">
+<meta property="article:tag" content="ProjectEdge">
 <meta name="twitter:card" content="summary">
 
 
@@ -143,7 +145,7 @@
 
 
 <ul>
-    <li><div class="all active">全部文章<small>(7)</small></div></li>
+    <li><div class="all active">全部文章<small>(8)</small></div></li>
     
         
             
@@ -155,7 +157,7 @@
     
         
             
-            <li><div data-rel="虚拟化/容器">虚拟化/容器<small>(1)</small></div>
+            <li><div data-rel="虚拟化/容器">虚拟化/容器<small>(3)</small></div>
                 
             </li>
             
@@ -179,7 +181,7 @@
     </div>
     <div><a  class="friends">友链</a></div>
 </div>
-<input type="hidden" id="yelog_site_posts_number" value="7">
+<input type="hidden" id="yelog_site_posts_number" value="8">
 
 <div style="display: none">
     <span id="busuanzi_value_site_uv"></span>
@@ -228,11 +230,15 @@
     </li>
     
     <li class="article-tag-list-item">
+        <a class="color2">ProjectEdge</a>
+    </li>
+    
+    <li class="article-tag-list-item">
         <a class="color2">Docker</a>
     </li>
     
     <li class="article-tag-list-item">
-        <a class="color2">ProjectEdge</a>
+        <a class="color4">k3s</a>
     </li>
     
     <li class="article-tag-list-item">
@@ -261,19 +267,19 @@
             <span class="post-date" title="2020-04-16 16:04:17">2020/04/16</span>
         </a>
         
-        <a  class=""
+        <a  class="虚拟化/容器 "
            href="/2020/04/21/ProjectEdge/k8s%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E5%9D%91/"
-           data-tag=""
+           data-tag="Kubernetes,ProjectEdge"
            data-author="" >
-            <span class="post-title" title="ProjectEdge/k8s集群中的坑">ProjectEdge/k8s集群中的坑</span>
-            <span class="post-date" title="2020-04-21 15:07:06">2020/04/21</span>
+            <span class="post-title" title="k8s集群中的坑">k8s集群中的坑</span>
+            <span class="post-date" title="2020-04-21 15:07:15">2020/04/21</span>
         </a>
         
         <a  class="虚拟化/容器 "
-           href="/2020/04/16/ProjectEdge/%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/"
-           data-tag="Kubernetes,Docker,ProjectEdge"
+           href="/2020/04/16/ProjectEdge/%E5%88%86%E5%B8%83%E5%BC%8F%E7%89%A9%E8%81%94%E7%BD%91%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/"
+           data-tag="Kubernetes,ProjectEdge,Docker,k3s"
            data-author="" >
-            <span class="post-title" title="安装k8s集群">安装k8s集群</span>
+            <span class="post-title" title="ProjectEdge/分布式物联网边缘计算服务设计与实现">ProjectEdge/分布式物联网边缘计算服务设计与实现</span>
             <span class="post-date" title="2020-04-16 04:00:48">2020/04/16</span>
         </a>
         
@@ -285,6 +291,14 @@
             <span class="post-date" title="2020-04-16 16:04:17">2020/04/16</span>
         </a>
         
+        <a  class="虚拟化/容器 "
+           href="/2020/04/16/ProjectEdge/%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/"
+           data-tag="Kubernetes,ProjectEdge,Docker"
+           data-author="" >
+            <span class="post-title" title="安装k8s集群">安装k8s集群</span>
+            <span class="post-date" title="2020-04-16 04:00:48">2020/04/16</span>
+        </a>
+        
         <a  class="Linux "
            href="/2018/09/08/shell-command/"
            data-tag="Linux,shell"
@@ -294,19 +308,19 @@
         </a>
         
         <a  class="工具 "
-           href="/2020/04/16/mermaid/"
-           data-tag="hexo"
-           data-author="" >
-            <span class="post-title" title="mermaid图表">mermaid图表</span>
-            <span class="post-date" title="2020-04-16 03:41:45">2020/04/16</span>
-        </a>
-        
-        <a  class="工具 "
            href="/2020/04/16/tools/Markdown/"
            data-tag=""
            data-author="" >
             <span class="post-title" title="Markdown语法">Markdown语法</span>
             <span class="post-date" title="2020-04-16 01:27:48">2020/04/16</span>
+        </a>
+        
+        <a  class="工具 "
+           href="/2020/04/16/mermaid/"
+           data-tag="hexo"
+           data-author="" >
+            <span class="post-title" title="mermaid图表">mermaid图表</span>
+            <span class="post-date" title="2020-04-16 03:41:45">2020/04/16</span>
         </a>
         
     </nav>
@@ -393,7 +407,7 @@
     /*作者、标签的自动补全*/
     $(function () {
         $('.search').AutoComplete({
-            'data': ['#Linux','#Ubuntu','#Kubernetes','#Docker','#ProjectEdge','#shell','#hexo',],
+            'data': ['#Linux','#Ubuntu','#Kubernetes','#ProjectEdge','#Docker','#k3s','#shell','#hexo',],
             'itemHeight': 20,
             'width': 418
         }).AutoComplete('show');

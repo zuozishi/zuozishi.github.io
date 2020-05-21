@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ProjectEdge/分布式物联网边缘计算服务设计与实现 | Zuozishi Blog</title>
+  <meta name="keywords" content=" Kubernetes , ProjectEdge , Docker , k3s ">
+  <meta name="description" content="ProjectEdge/分布式物联网边缘计算服务设计与实现 | Zuozishi Blog">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="无法访问上游DNS服务器修改kube-system命名空间的Config Map:coredns kind: ConfigMap apiVersion: v1 metadata:   name: coredns   namespace: kube-system   selfLink: ...   uid: ...   resourceVersion: ...   creationTimestamp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="k8s集群中的坑">
+<meta property="og:url" content="https://zuozishi.github.io/2020/04/21/ProjectEdge/k8s%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E5%9D%91/index.html">
+<meta property="og:site_name" content="Zuozishi Blog">
+<meta property="og:description" content="无法访问上游DNS服务器修改kube-system命名空间的Config Map:coredns kind: ConfigMap apiVersion: v1 metadata:   name: coredns   namespace: kube-system   selfLink: ...   uid: ...   resourceVersion: ...   creationTimestamp">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-21T07:07:15.000Z">
+<meta property="article:modified_time" content="2020-05-21T18:35:43.689Z">
+<meta property="article:author" content="Zuozishi">
+<meta property="article:tag" content="Kubernetes">
+<meta property="article:tag" content="ProjectEdge">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="https://avatars1.githubusercontent.com/u/20531439">
+
+<link href="/css/style.css?v=1.0.1" rel="stylesheet">
+
+<link href="/css/hl_theme/atom-light.css?v=1.0.1" rel="stylesheet">
+
+<link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+<link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="/js/jquery.autocomplete.min.js?v=1.0.1" ></script>
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/js/iconfont.js?v=1.0.1" ></script>
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="false">
+  <input class="theme_blog_path" value="">
+</div>
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="https://avatars1.githubusercontent.com/u/20531439" />
+</a>
+<div class="author">
+    <span>Zuozishi</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="rss" href="/atom.xml" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-rss"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="github" href="https://github.com/zuozishi" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-github"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+        <a title="email" href="mailto:wwb123123@outlook.com" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-email"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="qq" href="http://wpa.qq.com/msgrd?v=3&uin=992601314&site=qq&menu=yes" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-qq"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+        <a title="neteasemusic" href="https://music.163.com/#/user/home?id=52724654" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-neteasemusic"></use>
+                </svg>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active">全部文章<small>(8)</small></div></li>
+    
+        
+            
+            <li><div data-rel="Linux">Linux<small>(3)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="虚拟化/容器">虚拟化/容器<small>(3)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="工具">工具<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div><a  class="friends">友链</a></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="8">
+
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        友情链接
+        <i class="back-title-list"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+            <li><a target="_blank" href="https://github.com/yelog/blog/tree/master/source/_posts">叶落阁（源码）</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <form onkeydown="if(event.keyCode === 13){return false;}">
+        <input id="local-search-input" class="search" type="text" placeholder="以 in: 开头进行全文搜索" />
+        <i class="cross"></i>
+        <span>
+            <label for="tagswitch">Tags:</label>
+            <input id="tagswitch" type="checkbox" style="display: none" />
+            <i id="tagsWitchIcon"></i>
+        </span>
+    </form>
+    <div class="tags-list">
+    
+    <li class="article-tag-list-item">
+        <a class="color1">Linux</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color2">Ubuntu</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color1">Kubernetes</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color2">ProjectEdge</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color2">Docker</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color4">k3s</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color1">shell</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color5">hexo</a>
+    </li>
+    
+    <div class="clearfix"></div>
+</div>
+
+    
+    <div id="local-search-result">
+
+    </div>
+    
+    <nav id="title-list-nav">
+        
+        <a  class="Linux "
+           href="/2020/04/16/linux/Ubuntu%20CentOS%E6%90%AD%E5%BB%BANFS%E6%9C%8D%E5%8A%A1/"
+           data-tag="Linux,Ubuntu"
+           data-author="" >
+            <span class="post-title" title="Ubuntu/CentOS搭建NFS服务">Ubuntu/CentOS搭建NFS服务</span>
+            <span class="post-date" title="2020-04-16 16:04:17">2020/04/16</span>
+        </a>
+        
+        <a  class="虚拟化/容器 "
+           href="/2020/04/21/ProjectEdge/k8s%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E5%9D%91/"
+           data-tag="Kubernetes,ProjectEdge"
+           data-author="" >
+            <span class="post-title" title="k8s集群中的坑">k8s集群中的坑</span>
+            <span class="post-date" title="2020-04-21 15:07:15">2020/04/21</span>
+        </a>
+        
+        <a  class="虚拟化/容器 "
+           href="/2020/04/16/ProjectEdge/%E5%88%86%E5%B8%83%E5%BC%8F%E7%89%A9%E8%81%94%E7%BD%91%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/"
+           data-tag="Kubernetes,ProjectEdge,Docker,k3s"
+           data-author="" >
+            <span class="post-title" title="ProjectEdge/分布式物联网边缘计算服务设计与实现">ProjectEdge/分布式物联网边缘计算服务设计与实现</span>
+            <span class="post-date" title="2020-04-16 04:00:48">2020/04/16</span>
+        </a>
+        
+        <a  class="Linux "
+           href="/2020/04/16/linux/Ubuntu%E4%B8%8B%E6%90%AD%E5%BB%BAgitlab/"
+           data-tag="Linux,Ubuntu"
+           data-author="" >
+            <span class="post-title" title="Ubuntu下搭建GitLab">Ubuntu下搭建GitLab</span>
+            <span class="post-date" title="2020-04-16 16:04:17">2020/04/16</span>
+        </a>
+        
+        <a  class="虚拟化/容器 "
+           href="/2020/04/16/ProjectEdge/%E5%AE%89%E8%A3%85k8s%E9%9B%86%E7%BE%A4/"
+           data-tag="Kubernetes,ProjectEdge,Docker"
+           data-author="" >
+            <span class="post-title" title="安装k8s集群">安装k8s集群</span>
+            <span class="post-date" title="2020-04-16 04:00:48">2020/04/16</span>
+        </a>
+        
+        <a  class="Linux "
+           href="/2018/09/08/shell-command/"
+           data-tag="Linux,shell"
+           data-author="" >
+            <span class="post-title" title="shell速查表">shell速查表</span>
+            <span class="post-date" title="2018-09-08 11:48:24">2018/09/08</span>
+        </a>
+        
+        <a  class="工具 "
+           href="/2020/04/16/tools/Markdown/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Markdown语法">Markdown语法</span>
+            <span class="post-date" title="2020-04-16 01:27:48">2020/04/16</span>
+        </a>
+        
+        <a  class="工具 "
+           href="/2020/04/16/mermaid/"
+           data-tag="hexo"
+           data-author="" >
+            <span class="post-title" title="mermaid图表">mermaid图表</span>
+            <span class="post-date" title="2020-04-16 03:41:45">2020/04/16</span>
+        </a>
+        
+    </nav>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div class="post">
+    <div class="pjax">
+        <article id="post-ProjectEdge/分布式物联网边缘计算服务设计与实现" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">ProjectEdge/分布式物联网边缘计算服务设计与实现</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            
+                <a  data-rel="虚拟化/容器">虚拟化/容器</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            
+            <a class="color1">Kubernetes</a>
+            
+            <a class="color2">ProjectEdge</a>
+            
+            <a class="color2">Docker</a>
+            
+            <a class="color4">k3s</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2020-05-22 02:36:01'>2020-04-16 04:00</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        
+        <span id="busuanzi_container_page_pv">
+            阅读:<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+        <span class="top-comment" title="跳转至评论区">
+            <a href="#comments">
+                评论:<span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </a>
+        </span>
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-引言"><span class="toc-text">1 引言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-课题的研究背景和意义"><span class="toc-text">1.1 课题的研究背景和意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-国内外研究现状"><span class="toc-text">1.2 国内外研究现状</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1-国内研究现状"><span class="toc-text">1.2.1 国内研究现状</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-国外研究现状"><span class="toc-text">1.2.2 国外研究现状</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-本课题的研究内容及章节安排"><span class="toc-text">1.3 本课题的研究内容及章节安排</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-1-课题研究的内容"><span class="toc-text">1.3.1 课题研究的内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2-论文章节安排"><span class="toc-text">1.3.2 论文章节安排</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-本章小结"><span class="toc-text">1.4 本章小结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-分布式边缘计算相关技术"><span class="toc-text">2 分布式边缘计算相关技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-边缘计算的概念和特点"><span class="toc-text">2.1 边缘计算的概念和特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-虚拟化和容器技术"><span class="toc-text">2.2 虚拟化和容器技术</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-分布式架构和Kubernetes"><span class="toc-text">2.3 分布式架构和Kubernetes</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-云端架构的分析与设计"><span class="toc-text">3 云端架构的分析与设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-云端基础架构配置和规划"><span class="toc-text">3.1 云端基础架构配置和规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Kubernetes集群配置"><span class="toc-text">3.2 Kubernetes集群配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-K3S集群配置"><span class="toc-text">3.3 K3S集群配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-NFS服务器配置"><span class="toc-text">3.4 NFS服务器配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-多集群管理服务配置"><span class="toc-text">3.5 多集群管理服务配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-Azure-DevOps-Agent配置"><span class="toc-text">3.6 Azure DevOps Agent配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-边缘端架构的分析与设计"><span class="toc-text">4 边缘端架构的分析与设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-边缘端基础架构配置和规划"><span class="toc-text">4.1 边缘端基础架构配置和规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Aliyun-DDNS服务设计"><span class="toc-text">4.2 Aliyun-DDNS服务设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-frp服务设计"><span class="toc-text">4.3 frp服务设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-服务发现"><span class="toc-text">4.4 服务发现</span></a></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><div class='inner-toc'><h2>目录</h2><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-引言"><span class="toc-text">1 引言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-课题的研究背景和意义"><span class="toc-text">1.1 课题的研究背景和意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-国内外研究现状"><span class="toc-text">1.2 国内外研究现状</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1-国内研究现状"><span class="toc-text">1.2.1 国内研究现状</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-国外研究现状"><span class="toc-text">1.2.2 国外研究现状</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-本课题的研究内容及章节安排"><span class="toc-text">1.3 本课题的研究内容及章节安排</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-1-课题研究的内容"><span class="toc-text">1.3.1 课题研究的内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2-论文章节安排"><span class="toc-text">1.3.2 论文章节安排</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-本章小结"><span class="toc-text">1.4 本章小结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-分布式边缘计算相关技术"><span class="toc-text">2 分布式边缘计算相关技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-边缘计算的概念和特点"><span class="toc-text">2.1 边缘计算的概念和特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-虚拟化和容器技术"><span class="toc-text">2.2 虚拟化和容器技术</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-分布式架构和Kubernetes"><span class="toc-text">2.3 分布式架构和Kubernetes</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-云端架构的分析与设计"><span class="toc-text">3 云端架构的分析与设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-云端基础架构配置和规划"><span class="toc-text">3.1 云端基础架构配置和规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Kubernetes集群配置"><span class="toc-text">3.2 Kubernetes集群配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-K3S集群配置"><span class="toc-text">3.3 K3S集群配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-NFS服务器配置"><span class="toc-text">3.4 NFS服务器配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-多集群管理服务配置"><span class="toc-text">3.5 多集群管理服务配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-Azure-DevOps-Agent配置"><span class="toc-text">3.6 Azure DevOps Agent配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-边缘端架构的分析与设计"><span class="toc-text">4 边缘端架构的分析与设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-边缘端基础架构配置和规划"><span class="toc-text">4.1 边缘端基础架构配置和规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Aliyun-DDNS服务设计"><span class="toc-text">4.2 Aliyun-DDNS服务设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-frp服务设计"><span class="toc-text">4.3 frp服务设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-服务发现"><span class="toc-text">4.4 服务发现</span></a></li></ol></li></ol></div></p>
+<h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h2><h3 id="1-1-课题的研究背景和意义"><a href="#1-1-课题的研究背景和意义" class="headerlink" title="1.1 课题的研究背景和意义"></a>1.1 课题的研究背景和意义</h3><p>到2020年，全球联网的设备已超过200亿台。随着IPv6主干网建设和5G的应用，将有更多的物联网设备之间连接到互联网。云端需要处理越来越多的边缘端设备数据，同时边缘端设备的安全性也面临着不小的挑战。</p>
+<p>无人驾驶汽车的传感器和摄像头，实时捕捉路况信息，每秒大约会产生1GB的数据，如果无人驾驶判断依赖于云服务，即使是5G也不能保证服务的随时可用性和稳定性，而且还会给服务器造成不少的带宽压力。所以无人驾驶汽车这类产品需要能自身进行计算而不依赖于互联网。再以智能家居为例，越来越多的家庭设备依赖于云计算平台来进行控制，一旦网络出现故障，即使家里仍然有电，设备也不能很好的控制了。现在市场上几乎所有的智能音箱产品，只要脱离了互联网运行，就是电子废品，不管问什么问题，甚至是问个时间，都只会回答“请连接到网络”。</p>
+<p>边缘计算架构是将每个边缘节点设备赋予自主计算能力，简单来讲就是在边缘物联网传感器网络中加入一个高级网关，这个网关负责对传感器数据分析或存储，将部分信息、结果信息或报警信息上报到云服务。比如通过道路上的摄像头，边缘网关节点通过机器学习训练好的识别模型对摄像头画面进行汽车违规分析，假如识别到了违规情况和违规的车牌号，网关则会将这条违规信息上报到服务器。</p>
+<p>本课题将云端的分布式服务架构整合到边缘计算架构中，并引入DevOps开发模型。将云端技术应用到边缘物联网设备中。同时能在边缘端支持横向拓展、应用隔离、服务发现、负载均衡、滚动升级。</p>
+<h3 id="1-2-国内外研究现状"><a href="#1-2-国内外研究现状" class="headerlink" title="1.2 国内外研究现状"></a>1.2 国内外研究现状</h3><h4 id="1-2-1-国内研究现状"><a href="#1-2-1-国内研究现状" class="headerlink" title="1.2.1 国内研究现状"></a>1.2.1 国内研究现状</h4><p>KubeEdge是华为在2018年开源的面向边缘环境容器管理平台，KubeEdge能够接入云端Kubernetes集群，使得边缘应用的管理可以跟云端应用的管理一样，采用Kubernetes API。KubeEdge是一个开源系统，将本机容器化应用程序业务流程和设备管理扩展到边缘的主机。它基于 Kubernetes 构建，为云和边缘之间的网络、应用程序部署和元数据同步提供核心基础设施支持。它还支持 MQTT，并允许开发人员在 Edge 上编写自定义逻辑并启用资源受限的设备通信。</p>
+<p><img src="https://docs.kubeedge.io/en/latest/_images/kubeedge_arch.png" alt="KubeEdge架构"></p>
+<p>KubeEdge分为云端节点和边缘节点，云端节点依赖于Kubernetes集群，云端节点实现了一套Kubernetes API，将边缘节点与Kubernetes集群整合到一起管理。目前KubuEdge还处于初级开发版本，很多Kubernetes的基本组件还不支持（如：Persistent Volume、Ingress、Secret），这也给集群管理产生了不小的问题。</p>
+<h4 id="1-2-2-国外研究现状"><a href="#1-2-2-国外研究现状" class="headerlink" title="1.2.2 国外研究现状"></a>1.2.2 国外研究现状</h4><p>K3S是Rancher出品的一个开源、简化、轻量Kubernetes，为物联网和边缘计算建立分布式的Kubernetes。支持ARM64和ARMv7架构，从很小的树莓派到AWS的a1.4xlarge 32GiB服务器都能运行。K3S只有一个不到40MB的可执行二进制文件，减少了安装、运行和更新Kubernetes集群所需的依赖性和步骤。</p>
+<p><img src="https://github.com/zuozishi/ProjectEdgeDoc/raw/master/image/k3s.png" alt="K3S架构"></p>
+<p>K3S移除了所有Beta版的API，与Kubernetes架构基本差别不大。master节点用了更轻便的SQLite代替了k8s的etcd数据库，边缘节点使用了内置的容器引擎来代替Docker CE引擎。还可以使用Flannel网络组件打通集群Pod之间的网络通讯。K3S除了可以在物联网边缘计算场景中使用，还可以在ARM服务器集群中运行分布式应用。</p>
+<h3 id="1-3-本课题的研究内容及章节安排"><a href="#1-3-本课题的研究内容及章节安排" class="headerlink" title="1.3 本课题的研究内容及章节安排"></a>1.3 本课题的研究内容及章节安排</h3><h4 id="1-3-1-课题研究的内容"><a href="#1-3-1-课题研究的内容" class="headerlink" title="1.3.1 课题研究的内容"></a>1.3.1 课题研究的内容</h4><p>通过查阅大量现有的边缘计算资料和书籍，结合多年来对云计算技术的学习和了解以及分析现有分布式边缘计算架构的特点和缺陷，通过云端Kubernetes+边缘端K3S+设备端服务发现+DevOps自动化部署，实现了一套易管理、易扩展、易部署的分布式物联网边缘计算架构。</p>
+<p>首先将分布式物联网边缘计算架构分为云-边-端三层。云端包括完整的Kubernetes集群、Azure DevOps Agent服务、Rancher集群管理服务、NFS服务、K3S Server。边缘端作为物联网边缘网关运行K3S Agent，边缘端与云端共享Config Map、Secert、Persistent Volume，并集成DDNS以更好的支持IPv6网络访问，集成frpc以穿透IPv4 NAT网络进行直接访问。设备端可以通过端口扫描、UDP广播、DNS等方式扫描局域网内的边缘节点，当前网络如果不存在边缘节点，设备端也可以直接连接到云端工作。</p>
+<p>NFS服务器作为Kubernetes的一个Persistent Volume用来保存跨集群节点使用的持久化数据（如：配置文件、用户上传的文件等），Rancher集群管理服务可以同时管理云端的Kubernetes集群和边缘端的k3s集群，同时给Azure DevOps提供应用部署接口API。DDNS服务通过阿里云DNS解析API将所有边缘节点的IPv4和IPv6地址解析在域名<code>&lt;边缘节点主机名&gt;.zuozishi.online</code>上。frpc服务将边缘节点需要远程访问和管理的端口通过frp服务穿透到公网服务器，这样就能突破IPv4 NAT网络直接访问到边缘节点，这是一种IPv4到IPv6的过渡解决方案。</p>
+<p>所有的云端、边缘端、设备端代码托管在Github和Azure DevOps Repos平台上，当本地代码推送到在线仓库时，触发Azure Pipelines自动化编译、测试、部署事件，将应用镜像推送到阿里云镜像库，通过应用部署配置文件将应用部署到云端、边缘端或设备端。云端、边缘端或设备端会根据配置文件从阿里云镜像库拉取镜像并运行。</p>
+<p>云端、边缘端示例应用为网络音乐播放服务。网络音乐播放服务使用ASP .Net Core 3.0框架，实现用户使用酷狗账号登录、用户播放列表、音乐搜索、获取音乐歌词和URL等API接口，提供一个简单的Web访问界面，通过SignalR协议与设备端连接并通信。 设备端通过UDP广播包查询本地边缘节点，然后使用SignalR协议连接，实时报告音乐播放情况并接收控制指令。手机APP也在这个应用场景中作为设备端，一样通过UDP广播包查询本地边缘节点然后连接并通信。如果本地不存在边缘节点，音乐播放设备和手机APP将直接连到云端部署的应用进行工作。</p>
+<h4 id="1-3-2-论文章节安排"><a href="#1-3-2-论文章节安排" class="headerlink" title="1.3.2 论文章节安排"></a>1.3.2 论文章节安排</h4><p>本文章节安排如下：</p>
+<p>第一章、引言。介绍分布式边缘计算的背景和意义，介绍国内外分布式边缘计算架构的发展和研究现状，介绍论文的主要研究内容和章节安排。</p>
+<h3 id="1-4-本章小结"><a href="#1-4-本章小结" class="headerlink" title="1.4 本章小结"></a>1.4 本章小结</h3><p>本章先介绍了分布式边缘计算的研究背景和意义，介绍了分布式边缘计算架构发展中存在的些许问题，肯定了研究的意义。本章还对论文研究内容进行了介绍，并对系统的总体设计思路进行了描述。 最后，还对论文的整体章节进行安排。</p>
+<h2 id="2-分布式边缘计算相关技术"><a href="#2-分布式边缘计算相关技术" class="headerlink" title="2 分布式边缘计算相关技术"></a>2 分布式边缘计算相关技术</h2><h3 id="2-1-边缘计算的概念和特点"><a href="#2-1-边缘计算的概念和特点" class="headerlink" title="2.1 边缘计算的概念和特点"></a>2.1 边缘计算的概念和特点</h3><p>边缘计算采用一种分散式运算的架构，将之前由网络中心节点处理的应用程序、数据资料与服务的运算交由网络逻辑上的边缘节点处理。边缘计算将大型服务进行分解，切割成更小和更容易管理的部分，把原本完全由中心节点处理的大型服务分散到边缘节点。而边缘节点更接近用户终端装置，这一特点显著提高了数据处理速度与传送速度，进一步降低时延。</p>
+<p>边缘计算作为云计算模型的扩展和延伸，直面目前集中式云计算模型的发展短板，具有缓解网络带宽压力、增强服务响应能力、保护隐私数据等特征。在智慧城市、智能制造、智能交通、智能家居、智能零售以及视频监控系统等领域，边缘计算都在扮演着先进的改革者形象，推动传统的“云到端”演进为“云-边-端”的新型计算架构。</p>
+<p><img src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=752513542,1323126138&fm=26&gp=0.jpg" alt="边缘计算架构"></p>
+<h3 id="2-2-虚拟化和容器技术"><a href="#2-2-虚拟化和容器技术" class="headerlink" title="2.2 虚拟化和容器技术"></a>2.2 虚拟化和容器技术</h3><p>虚拟化是云计算的重要技术，可以将物理资源弹性地分配给客户。主机虚拟化的思想可以追溯到 IBM 机器的逻辑分区，即把一台 IBM 机器划分成若干台逻辑的服务器，每台逻辑服务器拥有独占的计算资源（CPU、内存、硬盘、网卡），可以单独安装和运行操作系统。IBM 机器价格昂贵，相对于当时的计算任务来说，机器的计算能力太过强大，所以需要划分为更小的计算单元。</p>
+<p>后来随着个人计算机处理能力的不断发展，1998 年 VMware 公司成立，这家公司专注于机器虚拟化的软件解决方案。也就是说，对于不支持逻辑分区的计算机，可以直接通过安装 VMware 虚拟化软件来模拟更多的虚拟机，然后再在这些虚拟机里安装操作系统和应用软件，可以给虚拟机灵活配置内存、CPU、硬盘和网卡等资源。</p>
+<p><img src="https://www.docker.com/sites/default/files/d8/2018-11/container-vm-whatcontainer_2.png" alt="虚拟化技术"></p>
+<p>但是在每台虚拟机里都要安装和运行操作系统的做法，仍然浪费了很多计算资源。为此，有公司专门推出了应用软件容器产品，即在操作系统层上创建一个个容器，这些容器共享下层的操作系统内核和硬件资源，但是每个容器可单独限制 CPU、内存、硬盘和网络带宽容量，并且拥有单独的 IP 地址和操作系统管理员账户，可以关闭和重启。与虚拟机最大的不同是，容器里不用再安装操作系统，因此浪费的计算资源也就大大减少了，这样同样一台计算机就可以服务于更多的租户。</p>
+<p><img src="https://www.docker.com/sites/default/files/d8/2018-11/docker-containerized-appliction-blue-border_2.png" alt="容器技术"></p>
+<h3 id="2-3-分布式架构和Kubernetes"><a href="#2-3-分布式架构和Kubernetes" class="headerlink" title="2.3 分布式架构和Kubernetes"></a>2.3 分布式架构和Kubernetes</h3><p>分布式系统是一个硬件或软件组件分布在不同的网络计算机上，彼此之间仅仅通过消息传递进行通信和协调的系统。</p>
+<p>在3G移动网络发展初期，随着上网人数的飙升和人均上网带宽增加，单服务器应用已经不能满足需求，云计算开始发展,企业也开始将一个应用的不同组件放在多个服务器上来均衡流量和提高可用性。例如像淘宝这类的网站，要解决的重点问题就是海量商品搜索、下单、支付等问题; 像腾讯这类的网站，要解决的是数亿级别用户的实时消息传输;而像百度这类的公司所要解决的又是海量数据的搜索。每一个种类的业务都有自己不同的系统架构。</p>
+<p><img src="https://images2018.cnblogs.com/blog/894443/201806/894443-20180625095828062-769155408.png" alt="分布式架构应用"></p>
+<p>Kubernetes 是用于自动部署，扩展和管理容器化应用程序的开源系统。它将组成应用程序的容器组合成逻辑单元，以便于管理和服务发现。Kubernetes 源自Google 15 年生产环境的运维经验，同时凝聚了社区的最佳创意和实践。Google 每周运行数十亿个容器，Kubernetes 基于与之相同的原则来设计，能够在不扩张运维团队的情况下进行规模扩展。Kubernetes 是开源系统，可以自由地部署在企业内部，私有云、混合云或公有云。</p>
+<p>Kubernetes是一个全新的的分布式架构领先方案，它基于容器技术，目的是实现资源管理的自动化，以及多个数据中心的资源利用率的最大化。通常，我们会把Kubernetes看作Docker的上层架构，就好像Java与J2EE的关系一样：J2EE是以Java为基础的企业级软件架构，Kubernetes则以Docker为基础打造了一个云计算时代的全新分布式系统架构。</p>
+<blockquote>
+<p>Kubernetes并不是依赖于Docker，也可以支持其他的容器引擎，如：Rocket、lxd 、rkt。</p>
+</blockquote>
+<h2 id="3-云端架构的分析与设计"><a href="#3-云端架构的分析与设计" class="headerlink" title="3 云端架构的分析与设计"></a>3 云端架构的分析与设计</h2><h3 id="3-1-云端基础架构配置和规划"><a href="#3-1-云端基础架构配置和规划" class="headerlink" title="3.1 云端基础架构配置和规划"></a>3.1 云端基础架构配置和规划</h3><p>云端服务器使用了五台阿里云的ECS（Elastic Compute Service）学生免费版入门级服务器，详细配置如下：</p>
+<ul>
+<li><p>CPU：2核</p>
+</li>
+<li><p>内存：4GiB</p>
+</li>
+<li><p>操作系统：CentOS 7.7 64位</p>
+</li>
+<li><p>独立公网IP</p>
+</li>
+<li><p>公网带宽：1Mbps</p>
+</li>
+<li><p>系统盘：40GiB (2120 IOPS)</p>
+</li>
+<li><p>地域：阿里云-华北2（北京）</p>
+</li>
+</ul>
+<blockquote>
+<p>注：由于个人能力，实验集群只在阿里云北京区域中搭建，如果跨不同地区搭建集群，则可以实现多地负载均衡，不过需要收取跨地区通信的流量费。</p>
+</blockquote>
+<p>由于五台机器属于不同的阿里云账号下，所以这五台机器不属于一个局域网，需要先在阿里云平台配置跨账号的云企业网，配置云企业网的实质则是配置这五个机器内网网段的路由表，配置完成后则认为这五台机器通过这个路由表进行跨网段通信。</p>
+<p><img src="https://github.com/zuozishi/ProjectEdgeDoc/raw/master/image/%E4%BA%91%E4%BC%81%E4%B8%9A%E7%BD%91.png" alt="云企业网"></p>
+<p><img src="https://github.com/zuozishi/ProjectEdgeDoc/raw/master/image/%E4%BA%91%E4%BC%81%E4%B8%9A%E7%BD%91-%E8%B7%AF%E7%94%B1%E8%A1%A8.png" alt="云企业网-路由表"></p>
+<p>其中一台机器作为master节点，两台机器作为node工作节点，一台服务器用来部署NFS文件共享服务、Azure Pipelines Agent和Rancher集群管理服务，一台作为k3s的master节点。</p>
+<table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>内网IP</th>
+<th>外网IP</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Zuozishi-Master</td>
+<td>172.17.151.242</td>
+<td>39.107.139.105</td>
+<td>k8s master</td>
+</tr>
+<tr>
+<td>Zuozishi-Slave1</td>
+<td>172.17.57.231</td>
+<td>39.97.161.176</td>
+<td>k8s工作节点</td>
+</tr>
+<tr>
+<td>Zuozishi-Slave2</td>
+<td>172.17.77.128</td>
+<td>47.93.236.68</td>
+<td>k8s工作节点</td>
+</tr>
+<tr>
+<td>Aliyun-YXM</td>
+<td>172.17.196.228</td>
+<td>39.97.114.49</td>
+<td>k3s master、frps服务</td>
+</tr>
+<tr>
+<td>Aliyun-TXR</td>
+<td>172.17.81.0</td>
+<td>47.94.90.203</td>
+<td>NFS服务、集群管理者</td>
+</tr>
+</tbody></table>
+<p>考虑到外部连接集群和应用的安全性，尽量使用了HTTPS协议，所以先要为主机申请SSL证书，本项目使用在阿里云申请的一年有效期的免费SSL证书。</p>
+<p><img src="https://github.com/zuozishi/ProjectEdgeDoc/raw/master/image/ssl.png" alt="SSL证书申请"></p>
+<h3 id="3-2-Kubernetes集群配置"><a href="#3-2-Kubernetes集群配置" class="headerlink" title="3.2 Kubernetes集群配置"></a>3.2 Kubernetes集群配置</h3><pre class="mermaid">graph TB
+    subgraph 阿里云
+    A[k8s主节点] --> B[k8s工作节点1]
+    A[k8s主节点] --> C[k8s工作节点2]
+    end</pre>
+
+<p>修改需要安装Kubernetes所有主机的Hosts</p>
+<pre><code class="bash">echo &gt; /etc/hosts &lt; EOF
+::1 localhost
+127.0.0.1 localhost
+172.17.57.231   Zuozishi-Slave1
+172.17.77.128   Zuozishi-Slave2
+172.17.196.228  Zuozishi-Slave3
+172.17.81.0     Aliyun-TXR      Zuozishi-NFS
+172.17.151.242  Zuozishi-Master
+172.17.151.242  Zuozishi-Master Zuozishi-Master
+EOF</code></pre>
+<p>在master节点运行自己编写的一键配置/安装脚本，脚本大概过程如下：</p>
+<ol>
+<li><p>关闭防火墙</p>
+</li>
+<li><p>配置软件安装源（yum）为阿里云镜像源</p>
+</li>
+<li><p>安装相关工具（wget、net-tools、sshpass）、docker-ce（容器运行引擎）、docker-ce-cli（容器引擎命令行管理工具）、kubelet（k8s核心）、kubeadm（k8s部署工具）、kubectl（k8s命令行管理工具）</p>
+</li>
+<li><p>下载Kubernetes所依赖的Docker镜像</p>
+</li>
+<li><p>配置Kubernetes容器内网络（安装weave网络插件）</p>
+</li>
+<li><p>安装kubernetes-dashboard（Web管理工具）</p>
+</li>
+<li><p>配置用于远程访问的SSL证书</p>
+</li>
+</ol>
+<p>工作节点配置与master前4个步骤相同，最后运行kubeadm join命令将该主机向master注册为工作节点即可。</p>
+<h3 id="3-3-K3S集群配置"><a href="#3-3-K3S集群配置" class="headerlink" title="3.3 K3S集群配置"></a>3.3 K3S集群配置</h3><pre class="mermaid">graph TB
+    subgraph 阿里云
+    A[k3s主节点]
+    end
+    subgraph 边缘2
+    A --> B[边缘网关]
+    B --> 设备03
+    B --> 设备04
+    end
+    subgraph 边缘1
+    A --> C[边缘网关]
+    C --> 设备01
+    C --> 设备02
+    end</pre>
+
+<p>k3s相比k8s的安装简单不少，只需要运行几句命令：</p>
+<pre><code class="bash"># master节点
+curl -sfL https://get.k3s.io | sh -
+
+# 安装Web管理工具
+GITHUB_URL=https://github.com/kubernetes/dashboard/releases
+VERSION_KUBE_DASHBOARD=$(curl -w &#39;%{url_effective}&#39; -I -L -s -S ${GITHUB_URL}/latest -o /dev/null | sed -e &#39;s|.*/||&#39;)
+k3s kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/${VERSION_KUBE_DASHBOARD}/aio/deploy/recommended.yaml
+
+# 编译节点
+export K3S_URL=39.97.114.49
+export K3S_TOKEN=&lt;密钥&gt;
+curl -sfL https://get.k3s.io | sh -</code></pre>
+<h3 id="3-4-NFS服务器配置"><a href="#3-4-NFS服务器配置" class="headerlink" title="3.4 NFS服务器配置"></a>3.4 NFS服务器配置</h3><p>NFS 即网络文件系统（Network File System），可以通过网络让不同机器、不同系统之间可以实现文件共享。在该项目中，NFS服务负责保存集群应用中所需的配置文件和一致性文件（即在集群环境中，多台机器访问同一份文件）。通过Kubernets的Persistent Volume（持久卷），将NFS挂载到容器内，多个容器就能访问到同一份文件。</p>
+<pre class="mermaid">graph TB
+    subgraph 阿里云
+    A[k8s主节点] --> B[k8s工作节点1]
+    A[k8s主节点] --> C[k8s工作节点2]
+    D[NFS服务器]
+    D -- 配置文件 --> B
+    D -- 配置文件 --> C
+    end</pre>
+
+<p>NFS服务器配置如下：</p>
+<ol>
+<li><p>安装 NFS 软件包<code>yum install -y nfs-common nfs-utils rpcbind</code></p>
+</li>
+<li><p>添加 NFS 共享目录</p>
+<p>将<code>/nfsroot</code>目录设置为NFS共享目录，设置改目录的权限为最宽松的权限<code>chmod 777 /nfsroot</code></p>
+</li>
+<li><p>启动NFS服务<code>/etc/init.d/nfs-kernel-server start</code></p>
+</li>
+</ol>
+<h3 id="3-5-多集群管理服务配置"><a href="#3-5-多集群管理服务配置" class="headerlink" title="3.5 多集群管理服务配置"></a>3.5 多集群管理服务配置</h3><p>多集群管理服务Rancher可以在一个Web应用中管理多个k8s或k3s集群，并通过提供的API接口来通过微软云DevOps远程管理集群和部署应用。</p>
+<pre class="mermaid">graph TB
+    subgraph 阿里云
+    A[Rancher] --> B[k8s主节点]
+    A --> C[k3s主节点]
+    end</pre>
+
+<p>本项目的Rancher服务安装在独立于k8s集群的服务器中，运行在Docker容器中，使用<code>devops.zuozishi.info</code>域名的HTTPS证书，暴露6443端口访问。安装命令如下：</p>
+<pre><code class="bash">docker run -d --restart=unless-stopped \
+  -p 6443:443 \
+  -v &lt;FULL_CHAIN.pem&gt;:/etc/rancher/ssl/cert.pem \
+  -v &lt;PRIVATE_KEY.pem&gt;:/etc/rancher/ssl/key.pem \
+  -v &lt;CA_CERTS.pem&gt;:/etc/rancher/ssl/cacerts.pem \
+  rancher/rancher:latest</code></pre>
+<blockquote>
+<p>由于域名未经备案，80端口和443端口无法使用。</p>
+</blockquote>
+<p>安装完成后通过地址<code>https://devops.zuozishi.info:6443</code>访问管理页面，设置初始密码。然后将k8s和k3s集群加入到管理中心。最后再新建一个远程访问API的密钥，用于远程部署应用。</p>
+<h3 id="3-6-Azure-DevOps-Agent配置"><a href="#3-6-Azure-DevOps-Agent配置" class="headerlink" title="3.6 Azure DevOps Agent配置"></a>3.6 Azure DevOps Agent配置</h3><p>在云端架构中，采用了混合云模式。基础服务和应用运行在阿里云ECS中，可执行文件以容器的方式保存在阿里云容器镜像服务中。而代码和自动化测试编译由微软云DevOps负责。在测试编译环节中，代码需要编译成多架构版本的（包括x86_64和arm、arm64）可执行文件，同时满足在云端环境（x64）和边缘环境（arm或arm64）运行。所以当代码push到仓库时，Azure DevOps会分别在x64和arm架构服务器中编译代码，这里负责编译代码的服务器就称之为Azure DevOps Agent。Azure DevOps中会给账号分配一个免费的agent（x64架构），因为应用要在编译节点树莓派（arm架构）中运行，需要配置一台arm架构的agent服务器负责编译代码生成arm架构的可执行程序。值得一提的是，在2020年前后，arm在服务器市场越来越有优势。</p>
+<pre class="mermaid">graph TB
+    A([开发者推送代码]) --> B
+    subgraph Azure DevOps
+    B[(代码仓库)]
+    B --> C
+    B --> D
+    B --> E
+    subgraph 编译
+    C[x86_64 Agent]
+    D[ARM Agent]
+    E[ARM64 Agent]
+    end
+    end
+    subgraph 阿里云
+    G[(阿里云容器镜像库)]
+    C -- x86_64架构应用镜像 --> G
+    D -- ARM架构应用镜像 --> G
+    E -- ARM64架构应用镜像 --> G
+    end</pre>
+
+<blockquote>
+<p>由于个人能力有限，本项目使用树莓派作为agent服务器。</p>
+</blockquote>
+<p>Azure DevOps Agent服务配置过程如下：</p>
+<ol>
+<li><p>登录Azure DevOps平台</p>
+</li>
+<li><p>在个人中心页面中创建一个API Key用于agent用户认证</p>
+</li>
+<li><p>下载arm版本的agent服务程序</p>
+</li>
+<li><p>运行./config.sh，配置API Key</p>
+</li>
+<li><p>运行agent服务</p>
+</li>
+</ol>
+<p><img src="https://github.com/zuozishi/ProjectEdgeDoc/raw/master/image/agent1.png" alt="配置Agent"></p>
+<h2 id="4-边缘端架构的分析与设计"><a href="#4-边缘端架构的分析与设计" class="headerlink" title="4 边缘端架构的分析与设计"></a>4 边缘端架构的分析与设计</h2><h3 id="4-1-边缘端基础架构配置和规划"><a href="#4-1-边缘端基础架构配置和规划" class="headerlink" title="4.1 边缘端基础架构配置和规划"></a>4.1 边缘端基础架构配置和规划</h3><p>边缘端包括边缘网关和设备，边缘网关主要负责连接设备并接收和处理设备发送的数据。边缘网关作为k3s工作节点，可以通过k3s主节点进行管理，边缘应用通过k3s主节点进行下发，以容器方式运行在边缘网关，应用下发后，即使边缘网关失去了对主节点的连接，也不会影响现有应用的运行，但是无法及时对应用进行更新。</p>
+<pre class="mermaid">graph TD
+    subgraph 阿里云
+    A[k3s主节点]
+    end
+    subgraph 边缘
+    A -.下发应用.-> D[边缘网关]
+    E[设备1] --> D
+    F[设备2] --> D
+    end</pre>
+
+<p>在本项目中，使用树莓派4B作为边缘网关，使用iTop-4413 ARM9开发板作为设备。</p>
+<p>树莓派4B的主要参数如下：</p>
+<ul>
+<li><p>SOC：Boradcom BCM2711</p>
+</li>
+<li><p>CPU：64位 1.5GHz 四核（28nm工艺）</p>
+</li>
+<li><p>内存：4GB LPDDR4</p>
+</li>
+<li><p>GPU：Boradcom VideoCore VI @ 500MHz</p>
+</li>
+<li><p>供电接口：Type-C（5V 3A）</p>
+</li>
+<li><p>WiFi网络：802.11AC 无线 2.4GHz/5GHz 双频</p>
+</li>
+<li><p>有线网络：真千兆以太网</p>
+</li>
+<li><p>操作系统：Raspbian Buster with desktop（32位系统）</p>
+</li>
+</ul>
+<p>iTop-4412开发板主要参数如下：</p>
+<ul>
+<li><p>CPU：Exynos4412，四核Cortex-A9，主频为1.4GHz-1.6GHz</p>
+</li>
+<li><p>内存：2GB 双通道 DDR3</p>
+</li>
+<li><p>供电接口：5V/2A</p>
+</li>
+<li><p>有线网络：10M/100M自适应网口</p>
+</li>
+<li><p>I/O接口：耳机输出、MIC输入、2路串口、1路A/D、摄像头接口、WiFi接口、HDMI输出、2路USB Host、1路USB OTG、GPIO（20PIN）、LCD接口（2个LVDS接口、1个RGB接口）、MIPI接口、GPS接口、JTAG接口</p>
+</li>
+<li><p>操作系统：Android 4.4（API Level 19）</p>
+</li>
+</ul>
+<h3 id="4-2-Aliyun-DDNS服务设计"><a href="#4-2-Aliyun-DDNS服务设计" class="headerlink" title="4.2 Aliyun-DDNS服务设计"></a>4.2 Aliyun-DDNS服务设计</h3><p>Aliyun-DDNS负责把边缘网关的外部IPv4和IPv6地址通过阿里云DNS解析服务解析到域名<code>&lt;边缘网关主机名&gt;.zuozishi.online</code>，如果边缘网关使用公网IP或支持IPv6网络，则可以通过解析的域名直接能远程访问到边缘网关，方便管理。</p>
+<p>主要代码如下：</p>
+<pre><code class="python"># python3
+if checkRecord(&#39;A&#39;):
+    print(&quot;删除域名中已有的IPv4解析数据&quot;)
+    delRecord(&#39;A&#39;)
+
+if checkRecord(&#39;AAAA&#39;):
+    print(&quot;删除域名中已有的IPv6解析数据&quot;)
+    delRecord(&#39;AAAA&#39;)
+
+ip = getIp4Addres()
+print(&quot;公网IPv4地址：&quot; + ip)
+recid = addRecord(ip, &#39;A&#39;)
+print(&quot;已向域名添加解析记录，ID：&quot; + recid)
+
+ipv6 = getIp6Addres()
+print(&quot;公网IPv6地址：&quot; + ipv6)
+recid = addRecord(ipv6, &#39;AAAA&#39;)
+print(&quot;已向域名添加解析记录，ID：&quot; + recid)</code></pre>
+<h3 id="4-3-frp服务设计"><a href="#4-3-frp服务设计" class="headerlink" title="4.3 frp服务设计"></a>4.3 frp服务设计</h3><p>frps服务主要针对于IPv4的NAT网络和非IPv6网络环境中，是对边缘网关进行远程访问的一种额外手段，通过端口转发方式，将处于内网的边缘网关通过frp服务将边缘网关的某个端口映射到具有公网IP主机的某个端口上。</p>
+<pre class="mermaid">sequenceDiagram
+    内网主机->>公网主机: 通过7000端口连接到frps服务
+    Note over 内网主机,公网主机: frp服务生命周期内保持连接
+    内网主机->>公网主机: 注册配置文件
+    Note over 内网主机,公网主机: frps和frpc端口映射关系
+    客户端->>公网主机: 通过8080端口访问
+    公网主机->>内网主机: 通过7000端口长连接请求8080端口数据
+    内网主机->>公网主机: 网页数据
+    公网主机->>客户端: 网页数据</pre>
+
+<blockquote>
+<p>frps：指frp server（frp服务端，公网主机）<br>frpc：指frp client（frp客户端，内网主机）</p>
+</blockquote>
+<h3 id="4-4-服务发现"><a href="#4-4-服务发现" class="headerlink" title="4.4 服务发现"></a>4.4 服务发现</h3><p>边缘物联网设备通过服务发现来找到局域网中可以连接的边缘网关，服务发现使用简单服务发现协议（SSDP，Simple Service Discovery Protocol）实现。边缘网关通过SSDP协议在网络中注册为UPnP边缘网关设备，通过Kubernetes API（边缘网关为k3s，但是API是兼容的）将可用的边缘应用作为UPnP属性。物联网设备端扫描网络中可用的UPnP设备，通过UPnP设备属性判断局域网中有没有可用的边缘网关,然后通过SSDP协议中的xml链接获取编译网关中运行的服务和服务端口号，然后设备端进行连接。</p>
+<blockquote>
+<p>简单服务发现协议（SSDP）是一种应用层协议，是构成通用即插即用(UPnP)技术的核心协议之一。简单服务发现协议提供了在局部网络里面发现设备的机制。</p>
+</blockquote>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 wwb123123@outlook.com </span>
+    </div>
+</article>
+
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>ProjectEdge/分布式物联网边缘计算服务设计与实现</p>
+    
+    <p><span class="copy-title">本文作者:</span><a  title="Zuozishi">Zuozishi</a></p>
+    <p><span class="copy-title">发布时间:</span>2020-04-16, 04:00:48</p>
+    <p><span class="copy-title">最后更新:</span>2020-05-22, 02:36:01</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2020/04/16/ProjectEdge/%E5%88%86%E5%B8%83%E5%BC%8F%E7%89%A9%E8%81%94%E7%BD%91%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/" title="ProjectEdge/分布式物联网边缘计算服务设计与实现">https://zuozishi.github.io/2020/04/16/ProjectEdge/%E5%88%86%E5%B8%83%E5%BC%8F%E7%89%A9%E8%81%94%E7%BD%91%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
+    <div id="comments"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+<script type="text/javascript">
+    $.getScript('/js/gitalk.js', function () {
+        var gitalk = new Gitalk({
+            clientID: 'ccbb6d9440d9ed26f30d',
+            clientSecret: '4daef55920f212dc69878c4ecc2ac84a3cbf466d',
+            repo: 'zuozishi.github.io',
+            owner: 'zuozishi',
+            admin: ['zuozishi'],
+            id: decodeURI(location.pathname),
+            distractionFreeMode: 'true',
+            language: 'zh-CN',
+            perPage: parseInt('10',10)
+        })
+        gitalk.render('comments')
+    })
+</script>
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">©2019-2020 Zuozishi</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full"><span class="min "></span></button>
+<button class="post-toc-menu"><span class="post-toc-menu-icons"></span></button>
+<div class="post-toc"><span class="post-toc-title">目录</span>
+    <div class="post-toc-content">
+
+    </div>
+</div>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+<div class="acParent"></div>
+
+</body>
+<script src="/js/jquery.pjax.js?v=1.0.1" ></script>
+
+<script src="/js/script.js?v=1.0.1" ></script>
+<script>
+    var img_resize = 'default';
+    /*作者、标签的自动补全*/
+    $(function () {
+        $('.search').AutoComplete({
+            'data': ['#Linux','#Ubuntu','#Kubernetes','#ProjectEdge','#Docker','#k3s','#shell','#hexo',],
+            'itemHeight': 20,
+            'width': 418
+        }).AutoComplete('show');
+    })
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $(".post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+
+        /*高亮代码块行号*/
+        
+        $('pre code').each(function(){
+            var lines = $(this).text().trim().split('\n').length, widther='';
+            if (lines>99) {
+                widther = 'widther'
+            }
+            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
+            $(this).addClass('has-numbering ' + widther)
+                    .parent()
+                    .append($numbering);
+            for(var i=1;i<=lines;i++){
+                $numbering.append($('<li/>').text(i));
+            }
+        });
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+        /* 渲染*/
+        function HTMLDecode(text) {
+            var temp = document.createElement("div");
+            temp.innerHTML = text;
+            var output = temp.innerText || temp.textContent;
+            temp = null;
+            return output;
+        }
+        if (window.mermaid){
+            window.mermaid = null
+        }
+        $.getScript("//cdn.jsdelivr.net/npm/mermaid@8.4.2/dist/mermaid.min.js", function () {
+            var mermaidOptions = JSON.parse(HTMLDecode("{&#34;theme&#34;:&#34;default&#34;,&#34;startOnLoad&#34;:true,&#34;flowchart&#34;:{&#34;useMaxWidth&#34;:false,&#34;htmlLabels&#34;:true}}"))
+            if (window.mermaid) {
+                mermaid.initialize(mermaidOptions)
+                mermaid.contentLoaded()
+            }
+        })
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<style>
+    pre{
+        position: relative;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        border: 1px solid #e2dede;
+        background: #FFF;
+        overflow: hidden;
+    }
+    code.has-numbering{
+        margin-left: 30px;
+    }
+    code.has-numbering.widther{
+        margin-left: 35px;
+    }
+    .pre-numbering{
+        margin: 0px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        padding: 0.5em 3px 0.7em 5px;
+        border-right: 1px solid #C3CCD0;
+        text-align: right;
+        color: #AAA;
+        background-color: #fafafa;
+    }
+    .pre-numbering.widther {
+        width: 35px;
+    }
+</style>
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 542px;
+    }
+    .nav.fullscreen {
+        margin-left: -542px;
+    }
+    .nav-left {
+        width: 120px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+        .nav .hide-list.fullscreen {
+            left: 492px
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+    .post .pjax article .article-entry>ol, .post .pjax article .article-entry>ul, .post .pjax article>ol, .post .pjax article>ul{
+        border: #e2dede solid 1px;
+        border-radius: 10px;
+        padding: 10px 32px 10px 56px;
+    }
+    .post .pjax article .article-entry li>ol, .post .pjax article .article-entry li>ul,.post .pjax article li>ol, .post .pjax article li>ul{
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .post .pjax article .article-entry>ol>li, .post .pjax article .article-entry>ul>li,.post .pjax article>ol>li, .post .pjax article>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    .post .pjax article .article-entry li>ol>li, .post .pjax article .article-entry li>ul>li,.post .pjax article li>ol>li, .post .pjax article li>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+    .nav-right:before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.3;
+        background: url("https://i.loli.net/2019/07/22/5d3521411f3f169375.png");
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+        -ms-background-size: cover;
+        -o-background-size: cover;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        background-size: cover;
+    }
+    
+
+    
+    .post .pjax article :not(pre) > code {
+        color: #24292e;
+        font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
+        background-color: rgba(27,31,35,.05);
+        border-radius: 3px;
+        font-size: 85%;
+        margin: 0;
+        padding: .2em .4em;
+    }
+    
+</style>
+
+
+
+
+
+
+
+</html>
